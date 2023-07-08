@@ -2,7 +2,6 @@ package com.craftinginterpreters.lox;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static com.craftinginterpreters.lox.TokenType.*;
 
@@ -57,8 +56,28 @@ public class Scanner {
             case ' ', '\r', '\t' -> {
             }
             case '\n' -> line++;
+            case '"' -> string();
             default -> Lox.error(line, "unexpected character.");
         }
+    }
+
+    private void string() {
+        while (peek() != '"' && !isAtEnd()) {
+            if (peek() == '\n') {
+                advance();
+            }
+        }
+        if (isAtEnd()) {
+            Lox.error(line, "unterminated string.");
+            return;
+        }
+
+        // the closing ".
+        advance();
+
+        // Trim the surrounding quotes.
+        String value = source.substring(start + 1, current - 1);
+        addToken(STRING, value);
     }
 
     private boolean match(char expected) {
