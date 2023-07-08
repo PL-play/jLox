@@ -21,5 +21,24 @@ public class ScannerTest {
         }
     }
 
+    @Test
+    public void test3() {
+        String source = "123 + 43.234";
+        Scanner scanner = new Scanner(source);
+        for (var token : scanner.scanTokens()) {
+            System.out.println(token);
+        }
+    }
+
+    @Test
+    public void test4() {
+        String source = "var a = 8;";
+        Scanner scanner = new Scanner(source);
+        for (var token : scanner.scanTokens()) {
+            System.out.println(token);
+        }
+    }
+
+
 
 }
