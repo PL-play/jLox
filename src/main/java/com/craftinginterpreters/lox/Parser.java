@@ -6,6 +6,7 @@ import static com.craftinginterpreters.lox.TokenType.*;
 
 public class Parser {
     private final List<Token> tokens;
+    private static class ParseError extends RuntimeException {}
     private int current = 0;
 
     public Parser(List<Token> tokens) {
@@ -157,8 +158,7 @@ public class Parser {
         throw error(peek(), "Expect expression.");
     }
 
-    private static class ParseError extends RuntimeException {
-    }
+
 
 
 }
