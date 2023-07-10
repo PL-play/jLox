@@ -12,6 +12,7 @@ public class GenerateAst {
         }
         String outputDir = args[0];
         defineAst(outputDir, "Expr", List.of("Binary : Expr left, Token operator, Expr right", "Grouping : Expr expression", "Literal: Object value", "Unary: Token operator, Expr right"));
+        defineAst(outputDir, "Stmt", List.of("Expression : Expr expression", "Print : Expr expression"));
 
     }
 
@@ -23,7 +24,7 @@ public class GenerateAst {
         writer.println("import java.util.List;");
         writer.println();
         writer.println("abstract class " + baseName + " {");
-        defineVisitor(writer,baseName,types);
+        defineVisitor(writer, baseName, types);
 
         // The AST classes
         for (String type : types) {
@@ -40,11 +41,11 @@ public class GenerateAst {
         writer.close();
     }
 
-    private static void defineVisitor(PrintWriter writer,String baseName,List<String> types){
+    private static void defineVisitor(PrintWriter writer, String baseName, List<String> types) {
         writer.println("  interface Visitor<R> {");
-        for(String type:types){
+        for (String type : types) {
             String typeName = type.split(":")[0].trim();
-            writer.println("    R visit"+typeName+baseName+"(" + typeName+" "+baseName.toLowerCase()+");");
+            writer.println("    R visit" + typeName + baseName + "(" + typeName + " " + baseName.toLowerCase() + ");");
         }
         writer.println("  }");
     }
@@ -67,7 +68,7 @@ public class GenerateAst {
         writer.println();
         writer.println("    @Override");
         writer.println("    <R> R accept(Visitor<R> visitor) {");
-        writer.println("    return visitor.visit"+className+baseName+"(this);");
+        writer.println("    return visitor.visit" + className + baseName + "(this);");
         writer.println("    }");
 
         // Fields.

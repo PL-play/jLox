@@ -1,6 +1,8 @@
 package com.craftinginterpreters.lox;
 
-public class Interpreter implements Expr.Visitor<Object> {
+import java.util.List;
+
+public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Object visitBinaryExpr(Expr.Binary expr) {
@@ -79,14 +81,18 @@ public class Interpreter implements Expr.Visitor<Object> {
         return null;
     }
 
-    public String interpret(Expr expr) {
+    public void interpret(List<Stmt> statements) {
         try {
-            Object value = evaluate(expr);
-            return stringify(value);
+            for (Stmt statement : statements) {
+                execute(statement);
+            }
         } catch (RuntimeError error) {
             Lox.runtimeError(error);
         }
-        return null;
+    }
+
+    private void execute(Stmt stmt){
+        stmt.accept(this);
     }
 
     private String stringify(Object object) {
@@ -143,4 +149,16 @@ public class Interpreter implements Expr.Visitor<Object> {
         throw new RuntimeError(operator, "Operands must be a numbers.");
     }
 
+    @Override
+    public Void visitExpressionStmt(Stmt.Expression stmt) {
+        evaluate(stmt.expression);
+        return null;
+    }
+
+    @Override
+    public Void visitPrintStmt(Stmt.Print stmt) {
+        Object value = evaluate(stmt.expression);
+        System.out.println(stringify(value));
+        return null;
+    }
 }

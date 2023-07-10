@@ -5,7 +5,7 @@ public class ParserTest {
 
     @Test
     public void test1(){
-        String source = "6 - 8 >=0";
+        String source = "6 - 8 >=0;";
         Lox.run(source);
     }
 }

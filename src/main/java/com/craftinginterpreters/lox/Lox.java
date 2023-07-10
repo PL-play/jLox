@@ -53,15 +53,14 @@ public class Lox {
         var scanner = new Scanner(source);
         List<Token> tokens = scanner.scanTokens();
         Parser parser = new Parser(tokens);
-        Expr expression = parser.parse();
+        List<Stmt> statements = parser.parse();
         if (hadError) {
             System.exit(65);
         }
         if (hadRuntimeError) {
             System.exit(70);
         }
-        String result = interpreter.interpret(expression);
-        System.out.println(result);
+        interpreter.interpret(statements);
 
     }
 
