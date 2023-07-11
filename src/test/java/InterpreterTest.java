@@ -65,5 +65,9 @@ public class InterpreterTest {
         Lox.run("print   nil == nil;");
     }
 
+    @Test
+    public void test14(){
+        Lox.run("var a=1; var b=2; print a+b;");
+    }
 
 }
