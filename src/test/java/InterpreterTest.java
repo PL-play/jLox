@@ -67,7 +67,12 @@ public class InterpreterTest {
 
     @Test
     public void test14(){
-        Lox.run("var a=1; var b=2; print a+b;");
+        Lox.run("var a=; var b=; print a+b;");
+    }
+
+    @Test
+    public void test15(){
+        Lox.run("var a=1; a=3; print a;");
     }
 
 }

@@ -25,22 +25,22 @@ public class Parser {
         return statements;
     }
 
-    private Stmt declaration(){
+    private Stmt declaration() {
         try {
-            if(match(VAR)){
+            if (match(VAR)) {
                 return varDeclaration();
             }
             return statement();
-        }catch (ParseError error){
+        } catch (ParseError error) {
             synchronize();
             return null;
         }
     }
 
-    private Stmt varDeclaration(){
-        Token name  = consume(IDENTIFIER,"Expect variable name.");
+    private Stmt varDeclaration() {
+        Token name = consume(IDENTIFIER, "Expect variable name.");
         Expr initializer = null;
-        if(match(EQUAL)){
+        if (match(EQUAL)) {
             initializer = expression();
         }
         consume(SEMICOLON, "Expect ';' after variable declaration.");
@@ -54,15 +54,15 @@ public class Parser {
         return expressionStatement();
     }
 
-    private Stmt expressionStatement(){
+    private Stmt expressionStatement() {
         Expr expr = expression();
-        consume(SEMICOLON,"Expect ';' after expression.");
+        consume(SEMICOLON, "Expect ';' after expression.");
         return new Stmt.Expression(expr);
     }
 
-    private Stmt printStatement(){
+    private Stmt printStatement() {
         Expr value = expression();
-        consume(SEMICOLON,"Expect ';' after value");
+        consume(SEMICOLON, "Expect ';' after value");
         return new Stmt.Print(value);
     }
 
@@ -131,8 +131,23 @@ public class Parser {
     }
 
     private Expr expression() {
-        return equality();
+        return assignment();
     }
+
+    private Expr assignment() {
+        Expr expr = equality();
+        if (match(EQUAL)) {
+            Token equals = previous();
+            Expr value = assignment();
+            if (expr instanceof Expr.Variable) {
+                Token name = ((Expr.Variable) expr).name;
+                return new Expr.Assign(name, value);
+            }
+            error(equals, "Invalid assignment target.");
+        }
+        return expr;
+    }
+
 
     private Expr equality() {
         Expr expr = comparison();
@@ -206,8 +221,6 @@ public class Parser {
         }
         throw error(peek(), "Expect expression.");
     }
-
-
 
 
 }
