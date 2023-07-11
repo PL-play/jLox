@@ -74,5 +74,28 @@ public class InterpreterTest {
     public void test15(){
         Lox.run("var a=1; a=3; print a;");
     }
+    @Test
+    public void test16(){
+        Lox.run(
+                "var a = \"global a\";\n" +
+                "var b = \"global b\";\n" +
+                "var c = \"global c\";\n" +
+                "{\n" +
+                    "var a = \"outer a\";\n" +
+                    "var b = \"outer b\";\n" +
+                        "{\n" +
+                            "var a = \"inner a\";\n" +
+                            "print a;\n" +
+                            "print b;\n" +
+                            "print c;\n" +
+                        "}\n" +
+                    "print a;\n" +
+                    "print b;\n" +
+                    "print c;\n" +
+                "}\n" +
+                "print a;\n" +
+                "print b;\n" +
+                "print c;");
+    }
 
 }
