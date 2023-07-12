@@ -83,6 +83,7 @@ public class Scanner {
             case '"' -> string();
             case 'o' -> {
                 if (peek() == 'r') {
+                    advance();
                     addToken(OR);
                 }
             }

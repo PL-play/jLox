@@ -72,7 +72,7 @@ public class InterpreterTest {
 
     @Test
     public void test15(){
-        Lox.run("var a=1; a=3; print a;");
+        Lox.run("-a=1; print a;");
     }
     @Test
     public void test16(){
@@ -96,6 +96,15 @@ public class InterpreterTest {
                 "print a;\n" +
                 "print b;\n" +
                 "print c;");
+    }
+
+    @Test
+    public void test17(){
+        Lox.run(
+                "print \"hi\" or false;" +
+                "print true and false;" +
+                        "print nil or \"yes\";" +
+                        "if (2>=3) {print 2; print 1; } else print 3;");
     }
 
 }
