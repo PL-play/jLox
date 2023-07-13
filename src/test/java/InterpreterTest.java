@@ -1,6 +1,9 @@
 import com.craftinginterpreters.lox.Lox;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.util.Objects;
+
 public class InterpreterTest {
     @Test
     public void test1() {
@@ -119,6 +122,11 @@ public class InterpreterTest {
                         "print a;" +
                         "a = a-1;" +
                         "}");
+    }
+
+    @Test
+    public void test19() throws IOException {
+        Lox.runFile(Objects.requireNonNull(getClass().getResource("test1.lox")).getPath().toString());
     }
 
 }
