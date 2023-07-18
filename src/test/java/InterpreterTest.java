@@ -2,6 +2,10 @@ import com.craftinginterpreters.lox.Lox;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 public class InterpreterTest {
@@ -126,7 +130,13 @@ public class InterpreterTest {
 
     @Test
     public void test19() throws IOException {
-        Lox.runFile(Objects.requireNonNull(getClass().getResource("test1.lox")).getPath().toString());
+        Lox.runFile(Objects.requireNonNull(getClass().getResource("test1.lox")).getPath());
+    }
+
+    @Test
+    public void test20() throws IOException, URISyntaxException {
+        byte[] bytes = Files.readAllBytes(Paths.get(getClass().getResource("test2.lox").toURI()));
+        Lox.run(new String(bytes, Charset.defaultCharset()));
     }
 
 }

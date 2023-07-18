@@ -1,0 +1,6 @@
+fun sayHi(first, last) {
+    print "Hi " + first + " " + last + "!";
+}
+var f = "Ran";
+var l = "Ling";
+sayHi(f, l);
