@@ -143,4 +143,10 @@ public class InterpreterTest {
         byte[] bytes = Files.readAllBytes(Paths.get(getClass().getResource("test3.lox").toURI()));
         Lox.run(new String(bytes, Charset.defaultCharset()));
     }
+
+    @Test
+    public void test22() throws IOException, URISyntaxException {
+        byte[] bytes = Files.readAllBytes(Paths.get(getClass().getResource("test4.lox").toURI()));
+        Lox.run(new String(bytes, Charset.defaultCharset()));
+    }
 }
