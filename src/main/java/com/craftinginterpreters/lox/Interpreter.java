@@ -94,10 +94,9 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         for (Expr argument : expr.arguments) {
             arguments.add(evaluate(argument));
         }
-        if (!(callee instanceof LoxCallable)) {
+        if (!(callee instanceof LoxCallable function)) {
             throw new RuntimeError(expr.paren, "Can only call functions and classes.");
         }
-        LoxCallable function = (LoxCallable) callee;
         if (arguments.size() != function.arity()) {
             throw new RuntimeError(expr.paren, "Expected " +
                     function.arity() + " arguments but got " +
@@ -267,6 +266,15 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         Object value = evaluate(stmt.expression);
         System.out.println(stringify(value));
         return null;
+    }
+
+    @Override
+    public Void visitReturnStmt(Stmt.Return stmt) {
+        Object value = null;
+        if (stmt.value != null) {
+            value = evaluate(stmt.value);
+        }
+        throw new Return(value);
     }
 
     @Override

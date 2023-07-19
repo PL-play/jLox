@@ -12,7 +12,7 @@ statement -> exprStmt
             | printStmt
             | returnStmt
             | whileStmt
-            | block;
+            | block;    
 block -> "{" declaration* "}" ;
 exprStmt -> expression ";" ;
 forStmt -> "for" "(" ( varDecl | exprStmt | ";" ) expression? ";" expression? ")" statement ;
