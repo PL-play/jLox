@@ -33,6 +33,9 @@ public class Lox {
         if (hadError) {
             System.exit(65);
         }
+        if (hadRuntimeError) {
+            System.exit(70);
+        }
     }
 
     private static void runPrompt() throws IOException {
@@ -57,9 +60,9 @@ public class Lox {
         if (hadError) {
             System.exit(65);
         }
-        if (hadRuntimeError) {
-            System.exit(70);
-        }
+        Resolver resolver = new Resolver(interpreter);
+        resolver.resolve(statements);
+
         interpreter.interpret(statements);
 
     }
