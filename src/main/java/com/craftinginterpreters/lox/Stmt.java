@@ -2,9 +2,11 @@ package com.craftinginterpreters.lox;
 
 import java.util.List;
 
-public abstract class Stmt {
+abstract class Stmt {
     interface Visitor<R> {
         R visitBlockStmt(Block stmt);
+
+        R visitClassStmt(Class stmt);
 
         R visitExpressionStmt(Expression stmt);
 
@@ -32,6 +34,21 @@ public abstract class Stmt {
         }
 
         final List<Stmt> statements;
+    }
+
+    static class Class extends Stmt {
+        Class(Token name, List<Function> methods) {
+            this.name = name;
+            this.methods = methods;
+        }
+
+        @Override
+        <R> R accept(Visitor<R> visitor) {
+            return visitor.visitClassStmt(this);
+        }
+
+        final Token name;
+        final List<Function> methods;
     }
 
     static class Expression extends Stmt {
