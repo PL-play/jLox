@@ -1,0 +1,7 @@
+class Duoduo {
+    cry(){
+        print "waaaaa";
+    }
+}
+
+Duoduo().cry();
