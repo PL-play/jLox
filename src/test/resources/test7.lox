@@ -1,0 +1,39 @@
+class Duoduo{
+    init(name,baba,mama){
+        this.name = name;
+        this.baba = baba;
+        this.mama = mama;
+    }
+    cry(){
+        fun call(name){
+            print name+" call: "+ this.baba.name+" "+ this.mama.name+"!";
+        }
+        return call(this.name);
+    }
+    eat(food){
+        fun eatAndPoop(){
+           print this.name + " eat " + food + "!";
+           print this.name + " poop!";
+        }
+        return eatAndPoop;
+    }
+
+}
+class Baba {
+    init(name){
+        this.name = name;
+    }
+}
+
+class Mama{
+    init(name){
+        this.name = name;
+    }
+}
+
+var baba = Baba("baba");
+var mama = Mama(nil).init("mama");
+var duoduo = Duoduo("duoduo",baba,mama);
+duoduo.cry();
+var eat = duoduo.eat("banana");
+eat();
