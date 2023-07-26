@@ -13,6 +13,8 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 
     private FunctionType currentFunction = FunctionType.NONE;
 
+    private ClassType currentClass = ClassType.NONE;
+
     Resolver(Interpreter interpreter) {
         this.interpreter = interpreter;
     }
@@ -21,6 +23,10 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
         NONE, FUNCTION, METHOD
 
 
+    }
+
+    private enum ClassType {
+        NONE, CLASS
     }
 
     @Override
