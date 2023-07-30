@@ -1,0 +1,10 @@
+class Mama {
+    eyes(){
+        print "eyes!";
+    }
+}
+class Duoduo < Mama {
+}
+
+
+Duoduo().eyes();

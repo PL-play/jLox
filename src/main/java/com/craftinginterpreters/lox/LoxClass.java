@@ -40,6 +40,12 @@ public class LoxClass implements LoxCallable {
     }
 
     public LoxFunction findMethod(String name) {
-        return methods.get(name);
+        if (methods.containsKey(name)) {
+            return methods.get(name);
+        }
+        if (superClass != null) {
+            return superClass.findMethod(name);
+        }
+        return null;
     }
 }
