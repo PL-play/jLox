@@ -5,12 +5,14 @@ import java.util.Map;
 
 public class LoxClass implements LoxCallable {
     final String name;
+    final LoxClass superClass;
 
     private final Map<String, LoxFunction> methods;
 
-    LoxClass(String name, Map<String, LoxFunction> methods) {
+    LoxClass(String name, LoxClass superClass, Map<String, LoxFunction> methods) {
         this.name = name;
         this.methods = methods;
+        this.superClass = superClass;
     }
 
     @Override

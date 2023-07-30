@@ -8,11 +8,11 @@ import java.util.List;
 
 public class GenerateAst {
     public static void main(String[] args) throws IOException {
-        if (args.length != 1) {
-            System.err.println("Usage: generate_ast <output directory>");
-            System.exit(64);
-        }
-        String outputDir = args[0];
+//        if (args.length != 1) {
+//            System.err.println("Usage: generate_ast <output directory>");
+//            System.exit(64);
+//        }
+        String outputDir = "./";
         defineAst(outputDir, "Expr", List.of(
                 "Assign: Token name, Expr value",
                 "Binary : Expr left, Token operator, Expr right",
@@ -28,7 +28,7 @@ public class GenerateAst {
         ));
         defineAst(outputDir, "Stmt", List.of(
                 "Block: List<Stmt> statements",
-                "Class: Token name,List<Stmt.Function> methods",
+                "Class: Token name, Expr.Variable superClass, List<Stmt.Function> methods",
                 "Expression : Expr expression",
                 "Function: Token name, List<Token> params, List<Stmt> body",
                 "If: Expr condition, Stmt thenBranch, Stmt elseBranch",
