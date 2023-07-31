@@ -2,7 +2,7 @@ package com.craftinginterpreters.lox;
 
 import java.util.List;
 
-abstract class Stmt {
+public abstract class Stmt {
     abstract <R> R accept(Visitor<R> visitor);
 
     interface Visitor<R> {

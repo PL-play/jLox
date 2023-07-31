@@ -19,16 +19,6 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
         this.interpreter = interpreter;
     }
 
-    private enum FunctionType {
-        NONE, FUNCTION, INITIALIZER, METHOD
-
-
-    }
-
-    private enum ClassType {
-        NONE, CLASS
-    }
-
     @Override
     public Void visitAssignExpr(Expr.Assign expr) {
         resolve(expr.value);
@@ -84,6 +74,12 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Void visitSuperExpr(Expr.Super expr) {
+        resolveLocal(expr, expr.keyword);
+        return null;
+    }
+
+    @Override
     public Void visitThisExpr(Expr.This expr) {
         if (currentClass == ClassType.NONE) {
             Lox.error(expr.keyword, "Can't use 'this' outside of a class.");
@@ -132,13 +128,15 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 
         declare(stmt.name);
         define(stmt.name);
-        if (stmt.superClass != null &&
-                stmt.name.lexeme.equals(stmt.superClass.name.lexeme)) {
-            Lox.error(stmt.superClass.name,
-                    "A class can't inherit from itself.");
+        if (stmt.superClass != null && stmt.name.lexeme.equals(stmt.superClass.name.lexeme)) {
+            Lox.error(stmt.superClass.name, "A class can't inherit from itself.");
         }
         if (stmt.superClass != null) {
             resolve(stmt.superClass);
+        }
+        if (stmt.superClass != null) {
+            beginScope();
+            scopes.peek().put("super", true);
         }
         beginScope();
         scopes.peek().put("this", true);
@@ -150,6 +148,9 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
             resolveFunction(method, declaration);
         }
         endScope();
+        if (stmt.superClass != null) {
+            endScope();
+        }
         currentClass = enclosingClass;
         return null;
     }
@@ -198,7 +199,6 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
         endScope();
         currentFunction = enclosingFunction;
     }
-
 
     @Override
     public Void visitIfStmt(Stmt.If stmt) {
@@ -267,5 +267,15 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
         resolve(stmt.condition);
         resolve(stmt.body);
         return null;
+    }
+
+    private enum FunctionType {
+        NONE, FUNCTION, INITIALIZER, METHOD
+
+
+    }
+
+    private enum ClassType {
+        NONE, CLASS
     }
 }
