@@ -7,10 +7,6 @@ import static com.craftinginterpreters.lox.TokenType.*;
 
 public class Parser {
     private final List<Token> tokens;
-
-    private static class ParseError extends RuntimeException {
-    }
-
     private int current = 0;
 
     public Parser(List<Token> tokens) {
@@ -198,7 +194,6 @@ public class Parser {
         return new Stmt.Print(value);
     }
 
-
     private boolean match(TokenType... tokenTypes) {
         for (var type : tokenTypes) {
             if (check(type)) {
@@ -274,8 +269,7 @@ public class Parser {
             if (expr instanceof Expr.Variable) {
                 Token name = ((Expr.Variable) expr).name;
                 return new Expr.Assign(name, value);
-            } else if (expr instanceof Expr.Get) {
-                Expr.Get get = (Expr.Get) expr;
+            } else if (expr instanceof Expr.Get get) {
                 return new Expr.Set(get.object, get.name, value);
             }
             throw error(equals, "Invalid assignment target.");
@@ -395,6 +389,12 @@ public class Parser {
         if (match(NUMBER, STRING)) {
             return new Expr.Literal(previous().literal);
         }
+        if (match(SUPER)) {
+            Token keyword = previous();
+            consume(DOT, "Expect '.' after 'super'.");
+            Token method = consume(IDENTIFIER, "Expect superclass method name.");
+            return new Expr.Super(keyword, method);
+        }
         if (match(THIS)) {
             return new Expr.This(previous());
         }
@@ -407,6 +407,9 @@ public class Parser {
             return new Expr.Grouping(expr);
         }
         throw error(peek(), "Expect expression.");
+    }
+
+    private static class ParseError extends RuntimeException {
     }
 
 
