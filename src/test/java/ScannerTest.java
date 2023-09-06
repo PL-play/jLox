@@ -32,7 +32,7 @@ public class ScannerTest {
 
     @Test
     public void test4() {
-        String source = "\n   var a = 8;";
+        String source = "\n   var 1or = 8;";
         Scanner scanner = new Scanner(source);
         for (var token : scanner.scanTokens()) {
             System.out.println(token);

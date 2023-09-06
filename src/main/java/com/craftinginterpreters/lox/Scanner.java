@@ -81,12 +81,6 @@ public class Scanner {
             }
             case '\n' -> line++;
             case '"' -> string();
-            case 'o' -> {
-                if (peek() == 'r') {
-                    advance();
-                    addToken(OR);
-                }
-            }
             default -> {
                 if (isDigit(c)) {
                     number();
