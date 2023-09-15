@@ -392,9 +392,16 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             } catch (BreakException ex) {
                 break;
             } catch (ContinueException ex) {
-                // TODO fix bug, increment statement in for statement.
+                // TODO fix bug, increment statement in for statement lookup variable distance incorrect?
+                // Should it be continue statement and break statement in Resolver do something with scope?
                 if (stmt.increment != null) {
-                    execute(stmt.increment);
+                    Environment previous = this.environment;
+                    try {
+                        this.environment = new Environment(environment);;
+                        execute(stmt.increment);
+                    } finally {
+                        this.environment = previous;
+                    }
                 }
             }
         }

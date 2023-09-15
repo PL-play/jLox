@@ -130,7 +130,7 @@ public class InterpreterTest {
                         "}");
 
         System.out.println("=======");
-        String forstmt = "for(var i=5;i>0;i = i-1){" +
+        String forstmt = "for(var i=5;i>0;i=i-1){" +
                 "   if (i==5) continue;" +
                 "   if (i==1) break;" +
                 "   print i;" +
