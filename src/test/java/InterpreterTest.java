@@ -134,6 +134,14 @@ public class InterpreterTest {
                 "   if (i==5) continue;" +
                 "   if (i==1) break;" +
                 "   print i;" +
+                "     for(var j=5;j>0;j=j-1){" +
+                "          if(j==4) continue;" +
+                "          if(j==2) break;" +
+                "          print \"----\";  "+
+                "          print \"   j : \";     " +
+                "          print j;" +
+                "          print \"----\";  "+
+                "     }"+
                 "}";
         Lox.run(forstmt);
     }
