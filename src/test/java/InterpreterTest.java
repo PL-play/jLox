@@ -124,6 +124,7 @@ public class InterpreterTest {
                 "var a = 5;" +
                         "while (a>0){" +
                         "print a;" +
+                        "if (a==3) break;"+
                         "a = a-1;" +
                         "}");
     }
