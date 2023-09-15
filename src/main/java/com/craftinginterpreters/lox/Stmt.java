@@ -8,6 +8,8 @@ public abstract class Stmt {
 
         R visitBreakStmt(Break stmt);
 
+        R visitContinueStmt(Continue stmt);
+
         R visitClassStmt(Class stmt);
 
         R visitExpressionStmt(Expression stmt);
@@ -45,6 +47,17 @@ public abstract class Stmt {
         @Override
         <R> R accept(Visitor<R> visitor) {
             return visitor.visitBreakStmt(this);
+        }
+
+    }
+
+    static class Continue extends Stmt {
+        Continue() {
+        }
+
+        @Override
+        <R> R accept(Visitor<R> visitor) {
+            return visitor.visitContinueStmt(this);
         }
 
     }
@@ -160,6 +173,13 @@ public abstract class Stmt {
         While(Expr condition, Stmt body) {
             this.condition = condition;
             this.body = body;
+            this.increment = null;
+        }
+
+        While(Expr condition, Stmt body,Stmt increment) {
+            this.condition = condition;
+            this.body = body;
+            this.increment = increment;
         }
 
         @Override
@@ -169,6 +189,7 @@ public abstract class Stmt {
 
         final Expr condition;
         final Stmt body;
+        final Stmt increment;
     }
 
     abstract <R> R accept(Visitor<R> visitor);

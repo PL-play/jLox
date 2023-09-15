@@ -89,6 +89,9 @@ public class Parser {
         if (match(BREAK)) {
             return breakStatement();
         }
+        if (match(CONTINUE)) {
+            return continueStatement();
+        }
         if (match(FOR)) {
             return forStatement();
         }
@@ -128,6 +131,14 @@ public class Parser {
         return new Stmt.Break();
     }
 
+    private Stmt continueStatement() {
+        if (loopDepth == 0) {
+            error(previous(), "Must be inside a loop to use 'continue'.");
+        }
+        consume(SEMICOLON, "Expect ';' after 'continue'");
+        return new Stmt.Continue();
+    }
+
     private Stmt forStatement() {
         consume(LEFT_PAREN, "Expect '(' after 'for'");
         Stmt initializer;
@@ -152,13 +163,15 @@ public class Parser {
         try {
             loopDepth++;
             Stmt body = statement();
+            Stmt incrementStmt = null;
             if (increment != null) {
-                body = new Stmt.Block(List.of(body, new Stmt.Expression(increment)));
+                incrementStmt = new Stmt.Expression(increment);
+                body = new Stmt.Block(List.of(body, incrementStmt));
             }
             if (condition == null) {
                 condition = new Expr.Literal(true);
             }
-            body = new Stmt.While(condition, body);
+            body = new Stmt.While(condition, body, incrementStmt);
 
             if (initializer != null) {
                 body = new Stmt.Block(List.of(initializer, body));

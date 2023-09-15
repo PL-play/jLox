@@ -30,6 +30,7 @@ public class GenerateAst {
         defineAst(outputDir, "Stmt", List.of(
                 "Block: List<Stmt> statements",
                 "Break: ",
+                "Continue: ",
                 "Class: Token name, Expr.Variable superClass, List<Stmt.Function> methods",
                 "Expression : Expr expression",
                 "Function: Token name, List<Token> params, List<Stmt> body",

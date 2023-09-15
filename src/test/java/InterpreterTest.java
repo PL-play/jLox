@@ -123,10 +123,19 @@ public class InterpreterTest {
         Lox.run(
                 "var a = 5;" +
                         "while (a>0){" +
+                        "if (a==2) break;"+
+                        "if (a==4) { a =a-1; continue;}"+
                         "print a;" +
-                        "if (a==3) break;"+
                         "a = a-1;" +
                         "}");
+
+        System.out.println("=======");
+        String forstmt = "for(var i=5;i>0;i = i-1){" +
+                "   if (i==5) continue;" +
+                "   if (i==1) break;" +
+                "   print i;" +
+                "}";
+        Lox.run(forstmt);
     }
 
     @Test

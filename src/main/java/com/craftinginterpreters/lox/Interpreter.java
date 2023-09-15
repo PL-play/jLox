@@ -288,6 +288,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Void visitContinueStmt(Stmt.Continue stmt) {
+        throw new ContinueException();
+    }
+
+    @Override
     public Void visitClassStmt(Stmt.Class stmt) {
         Object superClass = null;
         if (stmt.superClass != null) {
@@ -380,12 +385,18 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitWhileStmt(Stmt.While stmt) {
-        try {
-            while (isTruthy(evaluate(stmt.condition))) {
+
+        while (isTruthy(evaluate(stmt.condition))) {
+            try {
                 execute(stmt.body);
+            } catch (BreakException ex) {
+                break;
+            } catch (ContinueException ex) {
+                // TODO fix bug, increment statement in for statement.
+                if (stmt.increment != null) {
+                    execute(stmt.increment);
+                }
             }
-        } catch (BreakException ex) {
-            // Do nothing.
         }
         return null;
     }
