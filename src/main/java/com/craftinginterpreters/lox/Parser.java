@@ -189,7 +189,7 @@ public class Parser {
         try {
             loopDepth++;
             Stmt body = statement();
-            return new Stmt.While(condition, body);
+            return new Stmt.While(condition, body, null);
         } finally {
             loopDepth--;
         }

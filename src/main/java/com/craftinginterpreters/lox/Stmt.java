@@ -170,11 +170,6 @@ public abstract class Stmt {
     }
 
     static class While extends Stmt {
-        While(Expr condition, Stmt body) {
-            this.condition = condition;
-            this.body = body;
-            this.increment = null;
-        }
 
         While(Expr condition, Stmt body,Stmt increment) {
             this.condition = condition;

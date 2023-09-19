@@ -16,7 +16,7 @@ public class InterpreterTest {
 
     @Test
     public void test2() {
-        Lox.run("print 1+1 ;");
+        Lox.run("print 1+1+\"s\" ;");
     }
 
     @Test

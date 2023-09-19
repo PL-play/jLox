@@ -89,6 +89,12 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                 if (left instanceof String && right instanceof String) {
                     return left + (String) right;
                 }
+                if (left instanceof String && right instanceof Double) {
+                    return left + String.valueOf((double) right);
+                }
+                if (left instanceof Double && right instanceof String) {
+                    return String.valueOf((double) left) + right;
+                }
                 throw new RuntimeError(expr.operator, "Operands must be two numbers or two strings.");
             }
         }
@@ -397,7 +403,8 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                 if (stmt.increment != null) {
                     Environment previous = this.environment;
                     try {
-                        this.environment = new Environment(environment);;
+                        this.environment = new Environment(environment);
+                        ;
                         execute(stmt.increment);
                     } finally {
                         this.environment = previous;
