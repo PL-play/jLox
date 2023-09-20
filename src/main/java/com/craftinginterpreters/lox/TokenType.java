@@ -9,7 +9,7 @@ public enum TokenType {
     BANG, BANG_EQUAL,
     EQUAL, EQUAL_EQUAL,
     GRATER, GRATER_EQUAL,
-    LESS, LESS_EQUAL, COLON,
+    LESS, LESS_EQUAL, COLON, QUESTION,
 
     //Literals.
     IDENTIFIER, STRING, NUMBER,

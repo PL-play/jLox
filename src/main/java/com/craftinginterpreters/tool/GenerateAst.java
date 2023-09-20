@@ -26,7 +26,8 @@ public class GenerateAst {
                 "This: Token keyword",
                 "Unary: Token operator, Expr right",
                 "Variable: Token name",
-                "Function : List<Token> parameters, List<Stmt> body"
+                "Function : List<Token> parameters, List<Stmt> body",
+                "Ternary: Expr expr, Expr thenBranch, Expr elseBranch"
         ));
         defineAst(outputDir, "Stmt", List.of(
                 "Block: List<Stmt> statements",

@@ -116,6 +116,14 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
         return null;
     }
 
+    @Override
+    public Void visitTernaryExpr(Expr.Ternary expr) {
+        resolve(expr.expr);
+        resolve(expr.thenBranch);
+        resolve(expr.elseBranch);
+        return null;
+    }
+
     private void resolveLocal(Expr expr, Token name) {
         for (int i = scopes.size() - 1; i >= 0; i--) {
             if (scopes.get(i).containsKey(name.lexeme)) {

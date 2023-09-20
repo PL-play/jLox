@@ -29,6 +29,8 @@ abstract class Expr {
         R visitVariableExpr(Variable expr);
 
         R visitFunctionExpr(Function expr);
+
+        R visitTernaryExpr(Ternary expr);
     }
 
     static class Assign extends Expr {
@@ -224,6 +226,23 @@ abstract class Expr {
 
         final List<Token> parameters;
         final List<Stmt> body;
+    }
+
+    static class Ternary extends Expr {
+        Ternary(Expr expr, Expr thenBranch, Expr elseBranch) {
+            this.expr = expr;
+            this.thenBranch = thenBranch;
+            this.elseBranch = elseBranch;
+        }
+
+        @Override
+        <R> R accept(Visitor<R> visitor) {
+            return visitor.visitTernaryExpr(this);
+        }
+
+        final Expr expr;
+        final Expr thenBranch;
+        final Expr elseBranch;
     }
 
     abstract <R> R accept(Visitor<R> visitor);

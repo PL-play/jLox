@@ -304,7 +304,7 @@ public class Parser {
     }
 
     private Expr assignment() {
-        Expr expr = or();
+        Expr expr = ternary();
         if (match(EQUAL)) {
             Token equals = previous();
             Expr value = assignment();
@@ -315,6 +315,18 @@ public class Parser {
                 return new Expr.Set(get.object, get.name, value);
             }
             throw error(equals, "Invalid assignment target.");
+        }
+        return expr;
+    }
+
+    private Expr ternary() {
+        Expr expr = or();
+        if (match(QUESTION)) {
+            Expr thenBranch = expression();
+            consume(COLON, "Expect ':' after then branch of ternary expression.");
+            Expr elseBranch = ternary();
+            expr = new Expr.Ternary(expr, thenBranch, elseBranch);
+
         }
         return expr;
     }
