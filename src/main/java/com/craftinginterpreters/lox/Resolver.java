@@ -110,6 +110,12 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
         return null;
     }
 
+    @Override
+    public Void visitFunctionExpr(Expr.Function expr) {
+        resolveFunction(new Stmt.Function(null, expr), FunctionType.FUNCTION);
+        return null;
+    }
+
     private void resolveLocal(Expr expr, Token name) {
         for (int i = scopes.size() - 1; i >= 0; i--) {
             if (scopes.get(i).containsKey(name.lexeme)) {
@@ -208,11 +214,11 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
         FunctionType enclosingFunction = currentFunction;
         currentFunction = type;
         beginScope();
-        for (Token param : function.params) {
+        for (Token param : function.function.parameters) {
             declare(param);
             define(param);
         }
-        resolve(function.body);
+        resolve(function.function.body);
         endScope();
         currentFunction = enclosingFunction;
     }

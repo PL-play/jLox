@@ -27,7 +27,8 @@ public class Parser {
             if (match(CLASS)) {
                 return classDeclaration();
             }
-            if (match(FUN)) {
+            if (check(FUN) && checkNext(IDENTIFIER)) {
+                consume(FUN, null);
                 return function("function");
             }
             if (match(VAR)) {
@@ -39,6 +40,7 @@ public class Parser {
             return null;
         }
     }
+
 
     private Stmt classDeclaration() {
         Token name = consume(IDENTIFIER, "Expect class name.");
@@ -59,20 +61,24 @@ public class Parser {
 
     private Stmt.Function function(String kind) {
         Token name = consume(IDENTIFIER, "Expect " + kind + " name.");
-        consume(LEFT_PAREN, "Expect '(' after " + kind + " name.");
+        return new Stmt.Function(name, functionBody(kind));
+    }
+
+    private Expr.Function functionBody(String kind) {
+        consume(LEFT_PAREN, "Expect '(' after" + kind + " name.");
         List<Token> parameters = new ArrayList<>();
         if (!check(RIGHT_PAREN)) {
             do {
-                if (parameters.size() >= 255) {
+                if (parameters.size() > 255) {
                     error(peek(), "Can't have more than 255 parameters.");
                 }
                 parameters.add(consume(IDENTIFIER, "Expect parameter name."));
             } while (match(COMMA));
         }
-        consume(RIGHT_PAREN, "Expect ')' after parameters.");
+        consume(RIGHT_PAREN, "Expect ')' after parameter name.");
         consume(LEFT_BRACE, "Expect '{' before " + kind + " body.");
         List<Stmt> body = block();
-        return new Stmt.Function(name, parameters, body);
+        return new Expr.Function(parameters, body);
     }
 
     private Stmt varDeclaration() {
@@ -442,7 +448,16 @@ public class Parser {
             consume(RIGHT_PAREN, "Expect ‘)’ after expression.");
             return new Expr.Grouping(expr);
         }
+        if (match(LAMBDA)) {
+            return functionBody("Lambda");
+        }
         throw error(peek(), "Expect expression.");
+    }
+
+    private boolean checkNext(TokenType tokenType) {
+        if (isAtEnd()) return false;
+        if (tokens.get(current + 1).type == EOF) return false;
+        return tokens.get(current + 1).type == tokenType;
     }
 
     private static class ParseError extends RuntimeException {

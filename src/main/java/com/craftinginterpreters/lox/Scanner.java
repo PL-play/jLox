@@ -37,6 +37,8 @@ public class Scanner {
         keywords.put("true", TRUE);
         keywords.put("var", VAR);
         keywords.put("while", WHILE);
+        keywords.put("lambda", LAMBDA);
+
     }
 
     public Scanner(String source) {
@@ -64,6 +66,7 @@ public class Scanner {
             case '-' -> addToken(MINUS);
             case '+' -> addToken(PLUS);
             case ';' -> addToken(SEMICOLON);
+            case ':' -> addToken(COLON);
             case '*' -> addToken(STAR);
             case '!' -> addToken(match('=') ? BANG_EQUAL : BANG);
             case '=' -> addToken(match('=') ? EQUAL_EQUAL : EQUAL);
