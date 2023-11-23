@@ -327,12 +327,20 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             environment.define("super", superClass);
         }
 
+        Map<String, LoxFunction> classMethods = new HashMap<>();
+        for (Stmt.Function method : stmt.classMethods) {
+            LoxFunction function = new LoxFunction(method.name.lexeme, method.function, environment, false);
+            classMethods.put(method.name.lexeme, function);
+        }
+
+        LoxClass metaClass = new LoxClass(null, stmt.name.lexeme + "_metaclass", null, classMethods);
+
         Map<String, LoxFunction> methods = new HashMap<>();
         for (Stmt.Function method : stmt.methods) {
             LoxFunction function = new LoxFunction(method.name.lexeme, method.function, environment, method.name.lexeme.equals("init"));
             methods.put(method.name.lexeme, function);
         }
-        LoxClass klass = new LoxClass(stmt.name.lexeme, (LoxClass) superClass, methods);
+        LoxClass klass = new LoxClass(metaClass, stmt.name.lexeme, (LoxClass) superClass, methods);
         if (superClass != null) {
             environment = environment.enclosing;
         }
