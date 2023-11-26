@@ -346,6 +346,8 @@ public class Parser {
                 return new Expr.Assign(name, value);
             } else if (expr instanceof Expr.Get get) {
                 return new Expr.Set(get.object, get.name, value);
+            } else if (expr instanceof Expr.ArrayGet arrayGet) {
+                return new Expr.ArraySet(arrayGet.object, arrayGet.bracket, arrayGet.index, value);
             }
             throw error(equals, "Invalid assignment target.");
         }
@@ -441,6 +443,10 @@ public class Parser {
             } else if (match(DOT)) {
                 Token name = consume(IDENTIFIER, "Expect property name after '.'");
                 expr = new Expr.Get(expr, name);
+            } else if (match(LEFT_BRACKET)) {
+                Expr index = expression();
+                Token bracket = consume(RIGHT_BRACKET, "Expect ']' after array index.");
+                expr = new Expr.ArrayGet(expr, bracket, index);
             } else {
                 break;
             }
@@ -495,6 +501,17 @@ public class Parser {
         }
         if (match(LAMBDA)) {
             return functionBody("Lambda");
+        }
+        if (match(LEFT_BRACKET)) {
+            List<Expr> arrayElements = new ArrayList<>();
+            if (!check(RIGHT_BRACKET)) {
+                do {
+                    arrayElements.add(expression());
+                } while (match(COMMA));
+            }
+
+            Token bracket = consume(RIGHT_BRACKET, "Expect ']' after array.");
+            return new Expr.Array(bracket, arrayElements);
         }
         throw error(peek(), "Expect expression.");
     }

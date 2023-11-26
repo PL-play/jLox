@@ -37,7 +37,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {
-                int size = (int)(double)arguments.get(0);
+                int size = (int) (double) arguments.get(0);
                 return new LoxArray(size);
             }
         });
@@ -172,7 +172,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         }
         Object value = evaluate(expr.value);
         ((LoxInstance) object).set(expr.name, value);
-        return null;
+        return value;
     }
 
     @Override
@@ -224,6 +224,47 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             return evaluate(expr.thenBranch);
         }
         return evaluate(expr.elseBranch);
+    }
+
+    @Override
+    public Object visitArrayExpr(Expr.Array expr) {
+        LoxArray array = new LoxArray(expr.elements.size());
+        List<Object> elements = new ArrayList<>();
+        for (Expr e : expr.elements) {
+            elements.add(evaluate(e));
+        }
+        array.setElements(elements);
+        return array;
+    }
+
+    @Override
+    public Object visitArrayGetExpr(Expr.ArrayGet expr) {
+        // TODO index out of bounds check.
+        Object object = evaluate(expr.object);
+        if (object instanceof LoxArray) {
+            Object index = evaluate(expr.index);
+            if (!(index instanceof Double)) {
+                throw new RuntimeError(expr.bracket, "array index must be a int.");
+            }
+            return ((LoxArray) object).getElementByIndex((int) (double) index);
+        }
+        throw new RuntimeError(expr.bracket, "Only array can be accessed by index.");
+    }
+
+    @Override
+    public Object visitArraySetExpr(Expr.ArraySet expr) {
+        // TODO index out of bounds check.
+        Object object = evaluate(expr.object);
+        if (!(object instanceof LoxArray)) {
+            throw new RuntimeError(expr.bracket, "Only array can be set.");
+        }
+        Object index = evaluate(expr.index);
+        if (!(index instanceof Double)) {
+            throw new RuntimeError(expr.bracket, "array index must be a int.");
+        }
+        Object value = evaluate(expr.value);
+        ((LoxArray) object).setElementByIndex((int) (double) index, value);
+        return value;
     }
 
     private Object lookUpVariable(Token name, Expr expr) {

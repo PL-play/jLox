@@ -126,6 +126,29 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
         return null;
     }
 
+    @Override
+    public Void visitArrayExpr(Expr.Array expr) {
+        for (Expr argument : expr.elements) {
+            resolve(argument);
+        }
+        return null;
+    }
+
+    @Override
+    public Void visitArrayGetExpr(Expr.ArrayGet expr) {
+        resolve(expr.index);
+        resolve(expr.object);
+        return null;
+    }
+
+    @Override
+    public Void visitArraySetExpr(Expr.ArraySet expr) {
+        resolve(expr.value);
+        resolve(expr.index);
+        resolve(expr.object);
+        return null;
+    }
+
     private void resolveLocal(Expr expr, Token name) {
         for (int i = scopes.size() - 1; i >= 0; i--) {
             if (scopes.get(i).containsKey(name.lexeme)) {

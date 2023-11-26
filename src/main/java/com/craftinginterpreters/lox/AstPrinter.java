@@ -80,6 +80,21 @@ public class AstPrinter implements Expr.Visitor<String> {
         return null;
     }
 
+    @Override
+    public String visitArrayExpr(Expr.Array expr) {
+        return null;
+    }
+
+    @Override
+    public String visitArrayGetExpr(Expr.ArrayGet expr) {
+        return null;
+    }
+
+    @Override
+    public String visitArraySetExpr(Expr.ArraySet expr) {
+        return null;
+    }
+
     private String parenthesize(String name, Expr... exprs) {
         StringBuilder sb = new StringBuilder();
         sb.append("(").append(name);

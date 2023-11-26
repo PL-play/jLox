@@ -31,6 +31,12 @@ abstract class Expr {
         R visitFunctionExpr(Function expr);
 
         R visitTernaryExpr(Ternary expr);
+
+        R visitArrayExpr(Array expr);
+
+        R visitArrayGetExpr(ArrayGet expr);
+
+        R visitArraySetExpr(ArraySet expr);
     }
 
     static class Assign extends Expr {
@@ -82,6 +88,21 @@ abstract class Expr {
         final List<Expr> arguments;
     }
 
+    static class Array extends Expr {
+        Array(Token bracket, List<Expr> elements) {
+            this.bracket = bracket;
+            this.elements = elements;
+        }
+
+        final Token bracket;
+        final List<Expr> elements;
+
+        @Override
+        <R> R accept(Visitor<R> visitor) {
+            return visitor.visitArrayExpr(this);
+        }
+    }
+
     static class Get extends Expr {
         Get(Expr object, Token name) {
             this.object = object;
@@ -95,6 +116,23 @@ abstract class Expr {
 
         final Expr object;
         final Token name;
+    }
+
+    static class ArrayGet extends Expr {
+        ArrayGet(Expr object, Token bracket, Expr index) {
+            this.object = object;
+            this.bracket = bracket;
+            this.index = index;
+        }
+
+        @Override
+        <R> R accept(Visitor<R> visitor) {
+            return visitor.visitArrayGetExpr(this);
+        }
+
+        final Expr object;
+        final Token bracket;
+        final Expr index;
     }
 
     static class Grouping extends Expr {
@@ -155,6 +193,25 @@ abstract class Expr {
         final Expr object;
         final Token name;
         final Expr value;
+    }
+
+    static class ArraySet extends Expr {
+        ArraySet(Expr object, Token bracket, Expr index, Expr value) {
+            this.object = object;
+            this.index = index;
+            this.value = value;
+            this.bracket = bracket;
+        }
+
+        @Override
+        <R> R accept(Visitor<R> visitor) {
+            return visitor.visitArraySetExpr(this);
+        }
+
+        final Expr object;
+        final Expr index;
+        final Expr value;
+        final Token bracket;
     }
 
     static class Super extends Expr {

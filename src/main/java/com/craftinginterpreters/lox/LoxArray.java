@@ -10,7 +10,23 @@ public class LoxArray extends LoxInstance {
         this.elements = new Object[size];
     }
 
+    void setElements(List<Object> elements) {
+        for (int i = 0; i < elements.size(); i++) {
+            this.elements[i] = elements.get(i);
+        }
+    }
+
+    Object getElementByIndex(int index) {
+        return elements[index];
+    }
+
+    void setElementByIndex(int index, Object value) {
+        elements[index] = value;
+    }
+
     Object get(Token name) {
+        // TODO resizeable array
+        // TODO index out of bounds check.
         if (name.lexeme.equals("get")) {
             return new LoxCallable() {
                 @Override
@@ -20,8 +36,11 @@ public class LoxArray extends LoxInstance {
 
                 @Override
                 public Object call(Interpreter interpreter, List<Object> arguments) {
-                    int index = (int) (double) arguments.get(0);
-                    return elements[index];
+                    Object index = arguments.get(0);
+                    if (!(index instanceof Double)) {
+                        throw new RuntimeError(name, "array index must be a int.");
+                    }
+                    return getElementByIndex((int) (double) index);
                 }
             };
         } else if (name.lexeme.equals("set")) {
@@ -33,9 +52,12 @@ public class LoxArray extends LoxInstance {
 
                 @Override
                 public Object call(Interpreter interpreter, List<Object> arguments) {
-                    int index = (int) (double) arguments.get(0);
+                    Object index = arguments.get(0);
+                    if (!(index instanceof Double)) {
+                        throw new RuntimeError(name, "array index must be a int.");
+                    }
                     Object value = arguments.get(1);
-                    return elements[index] = value;
+                    return elements[(int) (double) index] = value;
                 }
             };
         } else if (name.lexeme.equals("length")) {

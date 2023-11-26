@@ -1,0 +1,16 @@
+var array = [];
+print array;
+
+array = [1,2,4];
+print array;
+
+array = ["aa",1+2];
+print array;
+print array.length;
+
+print array[0]+array[1];
+array[0]=9;
+print array;
+
+array[0] = lambda (x){ return x*x; };
+print array[0](9);
