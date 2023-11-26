@@ -33,11 +33,14 @@ public class Scanner {
         keywords.put("print", PRINT);
         keywords.put("return", RETURN);
         keywords.put("super", SUPER);
+        keywords.put("static", STATIC);
         keywords.put("this", THIS);
         keywords.put("true", TRUE);
         keywords.put("var", VAR);
         keywords.put("while", WHILE);
         keywords.put("lambda", LAMBDA);
+        keywords.put("with", WITH);
+        keywords.put("trait", TRAIT);
 
     }
 

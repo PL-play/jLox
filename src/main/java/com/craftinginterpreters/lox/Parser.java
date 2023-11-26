@@ -34,6 +34,9 @@ public class Parser {
             if (match(VAR)) {
                 return varDeclaration();
             }
+            if (match(TRAIT)) {
+                return traitDeclaration();
+            }
             return statement();
         } catch (ParseError error) {
             synchronize();
@@ -49,16 +52,44 @@ public class Parser {
             consume(IDENTIFIER, "Expect super class name.");
             superClass = new Expr.Variable(previous());
         }
+        List<Expr.Variable> traits = withClause();
+
         consume(LEFT_BRACE, "Expect '{' before class body.");
         List<Stmt.Function> methods = new ArrayList<>();
         List<Stmt.Function> classMethods = new ArrayList<>();
         while (!check(RIGHT_BRACE) && !isAtEnd()) {
-            boolean isClassMethod = match(CLASS);
+            boolean isClassMethod = match(STATIC);
             (isClassMethod ? classMethods : methods).add(function("method"));
         }
         consume(RIGHT_BRACE, "Expect '}' after class body.");
-        return new Stmt.Class(name, superClass, methods, classMethods);
+        return new Stmt.Class(name, superClass, methods, classMethods, traits);
 
+    }
+
+    private Stmt traitDeclaration() {
+        Token name = consume(IDENTIFIER, "Expect trait name.");
+        List<Expr.Variable> traits = withClause();
+
+        consume(LEFT_BRACE, "Expect '{' before trait body.");
+
+        List<Stmt.Function> methods = new ArrayList<>();
+        while (!check(RIGHT_BRACE) && !isAtEnd()) {
+            methods.add(function("method"));
+        }
+
+        consume(RIGHT_BRACE, "Expect '}' after trait body.");
+        return new Stmt.Trait(name, traits, methods);
+    }
+
+    private List<Expr.Variable> withClause() {
+        List<Expr.Variable> traits = new ArrayList<>();
+        if (match(WITH)) {
+            do {
+                consume(IDENTIFIER, "Expect trait name.");
+                traits.add(new Expr.Variable(previous()));
+            } while (match(COMMA));
+        }
+        return traits;
     }
 
     private Stmt.Function function(String kind) {

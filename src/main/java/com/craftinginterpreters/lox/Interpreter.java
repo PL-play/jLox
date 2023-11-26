@@ -335,7 +335,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
         LoxClass metaClass = new LoxClass(null, stmt.name.lexeme + "_metaclass", null, classMethods);
 
-        Map<String, LoxFunction> methods = new HashMap<>();
+        Map<String, LoxFunction> methods = applyTraits(stmt.traits);
         for (Stmt.Function method : stmt.methods) {
             LoxFunction function = new LoxFunction(method.name.lexeme, method.function, environment, method.name.lexeme.equals("init"));
             methods.put(method.name.lexeme, function);
@@ -435,5 +435,52 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             }
         }
         return null;
+    }
+
+    @Override
+    public Void visitTraitStmt(Stmt.Trait stmt) {
+        environment.define(stmt.name.lexeme, null);
+
+        Map<String, LoxFunction> methods = applyTraits(stmt.traits);
+
+        for (Stmt.Function method : stmt.methods) {
+            if (methods.containsKey(method.name.lexeme)) {
+                throw new RuntimeError(method.name,
+                        "A previous trait declares a method named '" +
+                                method.name.lexeme + "'.");
+            }
+
+            LoxFunction function = new LoxFunction(method.name.lexeme, method.function, environment, false);
+            methods.put(method.name.lexeme, function);
+        }
+
+        LoxTrait trait = new LoxTrait(stmt.name, methods);
+
+        environment.assign(stmt.name, trait);
+        return null;
+    }
+
+    private Map<String, LoxFunction> applyTraits(List<Expr.Variable> traits) {
+        Map<String, LoxFunction> methods = new HashMap<>();
+
+        for (Expr.Variable traitExpr : traits) {
+            Object traitObject = evaluate(traitExpr);
+            if (!(traitObject instanceof LoxTrait trait)) {
+                Token name = traitExpr.name;
+                throw new RuntimeError(name,
+                        "'" + name.lexeme + "' is not a trait.");
+            }
+
+            for (String name : trait.methods.keySet()) {
+                if (methods.containsKey(name)) {
+                    throw new RuntimeError(trait.name,
+                            "A previous trait declares a method named '" +
+                                    name + "'.");
+                }
+
+                methods.put(name, trait.methods.get(name));
+            }
+        }
+        return methods;
     }
 }

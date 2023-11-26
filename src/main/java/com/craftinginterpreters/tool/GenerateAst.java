@@ -33,7 +33,9 @@ public class GenerateAst {
                 "Block: List<Stmt> statements",
                 "Break: ",
                 "Continue: ",
-                "Class: Token name, Expr.Variable superClass, List<Stmt.Function> methods",
+                "Class: Token name, Expr.Variable superClass, List<Stmt.Function> methods, List<Expr> traits,",
+                "Trait  : Token name, List<Expr.Variable> traits," +
+                        " List<Stmt.Function> methods",
                 "Expression : Expr expression",
                 "Function: Token name, Expr.Function function",
                 "If: Expr condition, Stmt thenBranch, Stmt elseBranch",

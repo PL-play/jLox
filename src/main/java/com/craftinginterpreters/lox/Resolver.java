@@ -78,6 +78,8 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
         if (currentClass == ClassType.NONE) {
             Lox.error(expr.keyword, "Can't use 'super' outside of a class.");
 
+        } else if (currentClass == ClassType.TRAIT) {
+            Lox.error(expr.keyword, "Can't use 'super' in a trait.");
         } else if (currentClass != ClassType.SUBCLASS) {
             Lox.error(expr.keyword, "Can't use 'super' in a class with no superclass.");
         }
@@ -168,6 +170,9 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
         if (stmt.superClass != null) {
             beginScope();
             scopes.peek().put("super", true);
+        }
+        for (Expr trait : stmt.traits) {
+            resolve(trait);
         }
         beginScope();
         scopes.peek().put("this", true);
@@ -303,6 +308,31 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
         return null;
     }
 
+    @Override
+    public Void visitTraitStmt(Stmt.Trait stmt) {
+        declare(stmt.name);
+        define(stmt.name);
+
+        ClassType enclosingClass = currentClass;
+        currentClass = ClassType.TRAIT;
+
+        for (Expr trait : stmt.traits) {
+            resolve(trait);
+        }
+
+        beginScope();
+        scopes.peek().put("this", true);
+
+        for (Stmt.Function method : stmt.methods) {
+            FunctionType declaration = FunctionType.METHOD;
+            resolveFunction(method, declaration);
+        }
+
+        endScope();
+        currentClass = enclosingClass;
+        return null;
+    }
+
     private enum FunctionType {
         NONE, FUNCTION, INITIALIZER, METHOD
 
@@ -310,6 +340,6 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     }
 
     private enum ClassType {
-        NONE, CLASS, SUBCLASS
+        NONE, CLASS, SUBCLASS, TRAIT
     }
 }
